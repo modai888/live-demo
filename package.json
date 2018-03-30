@@ -4,15 +4,24 @@
   "author": "王学波 <wangxuebo@gridsum.com>",
   "private": true,
   "scripts": {
+    "d": "node $NODE_DEBUG_OPTION ./node_modules/.bin/nuxt",
+    "debug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/webpack --hot",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --inline --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "sync": "rsync -rtzvlC --delete --exclude node_modules --exclude src --exclude \".git\" --exclude \".vscode\"  ./ root@123.206.33.45:/data/www/live-demo"
   },
   "dependencies": {
-    "element-ui": "^1.4.1",
+    "axios": "^0.18.0",
+    "debug": "^3.1.0",
+    "element-ui": "^2.2.1",
     "glob": "^7.1.2",
+    "iview": "^2.11.0-rc.1",
     "koa": "^2.5.0",
     "koa-router": "^7.4.0",
-    "vue": "^2.4.2"
+    "koa-static-cache": "^5.1.2",
+    "nuxt": "^1.4.0",
+    "vue": "^2.5.16",
+    "vue-server-renderer": "^2.5.16"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -33,12 +42,20 @@
     "html-loader": "^0.5.0",
     "html-webpack-plugin": "^2.30.0",
     "multipage-webpack-plugin": "^0.4.0",
+    "node-sass": "^4.7.2",
     "optimize-css-assets-webpack-plugin": "^3.0.0",
-    "postcss-loader": "^2.0.6",
+    "postcss-base64": "^0.7.1",
+    "postcss-cssnext": "^3.0.2",
+    "postcss-import": "^11.0.0",
+    "postcss-loader": "^2.0.8",
+    "postcss-nesting": "^4.2.1",
+    "postcss-url": "^7.3.0",
+    "precss": "^3.1.2",
+    "sass-loader": "^6.0.7",
     "style-loader": "^0.18.2",
     "url-loader": "^0.5.9",
     "vue-loader": "^13.0.4",
-    "vue-template-compiler": "^2.4.2",
+    "vue-template-compiler": "^2.5.16",
     "webpack": "^3.5.2",
     "webpack-dev-server": "^2.11.2"
   }

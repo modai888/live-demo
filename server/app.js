@@ -6,13 +6,24 @@ const path = require('path');
 const fs = require('fs');
 const Koa = require('koa');
 const Router = require('koa-router');
+const staticCache = require('koa-static-cache');
 const compose = require('koa-compose');
+const { Nuxt, Builder } = require('nuxt');
+const pluginRouter = require('./lib/router');
 
 // global koa instance
 const app = new Koa();
 
 // catch global exception
 app.on('error', (error) => {
+    // 添加错误响应的自定义header
+    // error.headers = {};
+    // 用户可在此定制错误信息，error.expose
+    // error.code
+    // error.status
+    // error.message
+    // error.expose
+
     console.error('globa error: ' + error);
 })
 
@@ -22,12 +33,6 @@ class Server extends EventEmitter {
      */
     constructor(opts) {
         super();
-
-        this._plugins = {};
-        this._routers = [];
-
-        let route = (ctx, next) => { next(); };
-        this._pluginRoute = route;
     }
 
     get app() {
@@ -35,90 +40,64 @@ class Server extends EventEmitter {
     }
 
     async start(port) {
-        try {
-            this.emit('beforeStart');
-            // 注册插件
-            await this.installPlugins();
+        this.emit('beforeStart');
 
-            // 注册一个插件路由入口
-            app.use(async (ctx, next) => {
-                return this._pluginRoute(ctx, next);
-            });
-
-            await new Promise((resolve) => {
-                app.listen(port, resolve);
-            })
-
-        } catch (e) {
-            console.error(e);
+        // 托管静态资源
+        if ( process.env.NODE_ENV !== 'development' ) {
+            app.use(staticCache({
+                dir: path.join(__dirname, '..', 'dist')
+            }))
         }
-    }
 
-    async installPlugins() {
-        let plugins = glob.sync('server/plugins/**/plugin.js')
+        // add nuxt support
+        const config = require('../nuxt.config.js')
+        config.dev = !(app.env === 'production')
 
-        for (let plugin of plugins) {
-            // get plugin base path
-            let pluginPrefix = plugin.split('server/plugins/')[1].split('/plugin.js')[0];
-            let pluginFile = path.resolve('.', plugin);
+        // Instantiate nuxt.js
+        const nuxt = new Nuxt(config)
 
-            try {
-                // require plugin.js file
-                let plug = require(pluginFile);
-                // 插件访问前缀
-                plug.prefix = plugin.prefix || pluginPrefix;
-                // install plugin
-                await this.install(plug);
-            } catch (e) {
-                console.log(`plugin: ${plugin} 注册失败: ` + e);
+        // Build in development
+        if ( config.dev ) {
+            const builder = new Builder(nuxt);
+            await builder.build()
+        }
+
+        app.use(async (ctx, next) => {
+            await next();
+
+            if ( ctx.body === undefined ) {
+                ctx.status = 200; // koa defaults to 404 when it sees that status is unset
+                return new Promise((resolve, reject) => {
+                    ctx.res.on('close', resolve);
+                    ctx.res.on('finish', resolve);
+                    nuxt.render(ctx.req, ctx.res, promise => {
+                        // nuxt.render passes a rejected promise into callback on error.
+                        promise.then(resolve).catch(reject)
+                    })
+                })
             }
-        }
-    }
-
-    async install(plugin) {
-        // 判断是否已经安装
-        if (this._plugins[plugin.name]) return;
-
-        let prefix = plugin.prefix || plugin.name
-        // 注册组件
-        let routes = await plugin.register(this, {
-            prefix
         });
 
-        // 注册插件路由
-        this.setRoutes(prefix, routes)
+        // 注册一个插件路由入口
+        app.use(await pluginRouter({
+            pluginDir: 'server/plugins',
+            pluginFile: 'plugin.js'
+        }));
 
-        this._plugins[plugin] = true;
-    }
+        await new Promise((resolve) => {
+            app.listen(port, resolve);
+        })
 
-    setRoutes(prefix, routes) {
-        if (!routes.length) return;
-
-        if (prefix && prefix.slice(0, 1) !== '/') {
-            prefix = '/' + prefix;
-        }
-
-        let router = new Router({
-            prefix: prefix || ''
-        });
-
-        routes.forEach(route => {
-            let path = route.path || '';
-
-            Object.keys(route).forEach((m) => {
-                if (typeof router[m] === 'function') {
-                    router[m].call(router, path, route[m]);
-                }
-            })
-        });
-
-        // 组合成新的中间件
-        this._routers.push(router);
-        this._pluginRoute = compose([].concat.apply([],
-            this._routers.map((r) => {
-                return [r.routes(), r.allowedMethods()];
-            })
-        ));
+        // try {
+        //
+        // } catch ( e ) {
+        //     /**
+        //      * 拦截系统抛出的异常错误，进行日志记录，并给予合适的响应。
+        //      * */
+        //     console.error();
+        //     console.error(e);
+        //     console.error();
+        // }
     }
 
 }

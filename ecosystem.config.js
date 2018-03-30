@@ -32,8 +32,8 @@ module.exports = {
       host: "212.83.163.1",
       ref: "origin/master",
       repo: "git@github.com:repo.git",
-      path: "/var/www/production",
-      "post-deploy": "npm install --only=prod && pm2 startOrRestart ecosystem.config.js --env production"
+      path: "/data/www/live-demo",
+      "post-deploy": "npm install && pm2 startOrRestart ecosystem.config.js --env production"
     },
     dev: {
       user: "node",

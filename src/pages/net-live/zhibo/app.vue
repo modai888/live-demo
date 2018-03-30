@@ -103,7 +103,6 @@ export default {
               e.name &&
               "PermissionDeniedError" == e.name &&
               this.createPublisher();
-            Í;
           }
         )
       : this.createPublisher();
