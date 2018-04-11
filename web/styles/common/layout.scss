@@ -1,0 +1,49 @@
+html, body {
+
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-weight: 400;
+  font-size: $--font-size-base;
+  color: $--color-black;
+
+  overflow-y: scroll; /*始终显示Y轴滚动条*/
+  -ms-overflow-style: scrollbar; /*修复ie下滚动条遮挡问题*/
+}
+
+.#{$prefix}-container {
+
+  @at-root &__inner {
+    @include center-block($--container-width);
+  }
+}
+
+.#{$prefix}-header {
+  background-color: $--header-default;
+  height: $--header-height-default;
+  line-height: $--header-height-default;
+  padding: 0 56px;
+}
+
+.#{$prefix}-footer {
+  background-color: $--footer-default;
+  height: $--footer-height-default;
+}
+
+/* link
+-----------------------*/
+a {
+  text-decoration: none;
+  color: $--link-color;
+
+  &:active,
+  &:hover {
+    color: $--link-hover-color
+  }
+
+  &:visited {
+    color: $--link-color;
+  }
+}
+

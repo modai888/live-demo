@@ -1,0 +1,17 @@
+@charset "utf-8";
+
+/**
+  所有页面共享的全局样式
+  需要配置在 nuxt.config.js的css字段中，进行全局引用
+*/
+@import "vars/vars";
+@import "vars/element-ui-vars";
+
+@import "mixins/mixins";
+@import "common/reset";
+@import "common/layout";
+
+
+// 引入element-ui样式
+
+@import "~element-ui/packages/theme-chalk/src/index";

@@ -1,0 +1,21 @@
+/**
+  水平块居中
+*/
+
+@mixin center-block($width) {
+  width: $width;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@mixin prefix($sels) {
+  $selector: '';
+
+  @each $sel in $sels {
+    $selector: $selector + '.' + $prefix + '-' + $sel + ','
+  }
+
+  #{$selector} {
+    @content;
+  }
+}

@@ -1,0 +1,49 @@
+/**
+  默认布局样式
+*/
+@import "../vars/vars";
+@import "../mixins/mixins";
+
+@include prefix(brand nav) {
+  display: inline-block;
+}
+
+@include prefix(brand) {
+  margin-right: 56px;
+}
+
+@include prefix(nav) {
+  & > li {
+    display: inline-block;
+    list-style: none;
+
+    & > a {
+      padding: 0 15px;
+      display: inline-block;
+      color: $--navbar-link-color;
+
+      &.nuxt-link-exact-active,
+      &.active,
+      &:active,
+      &:hover {
+        color: $--navbar-link-active-color;
+
+        background: linear-gradient(180deg, $--color-primary, $--color-primary 100%) no-repeat bottom;
+        background-size: 100% 3px;
+      }
+    }
+  }
+}
+
+@include prefix(auth-info) {
+  float: right;
+
+  & a {
+    display: inline-block;
+    padding: 0 15px;
+  }
+}
+
+
+
+

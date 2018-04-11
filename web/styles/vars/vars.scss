@@ -1,0 +1,26 @@
+$prefix: df;
+
+$--color-primary: #ff00ff !default;
+$--color-black: #000 !default;
+
+// font-size
+$--font-size-base : 14px !default;
+
+
+// 主内容区宽度
+$--container-width: 1170px !default;
+
+/* 顶部导航区
+--------------------------*/
+$--header-default: #fafafa !default;
+$--header-height-default: 56px !default;
+
+/** 页脚
+-------------------------*/
+$--footer-default: #2b333f !default;
+$--footer-height-default: 260px !default;
+
+/** Link
+-------------------------*/
+$--navbar-link-color: #999 !default;
+$--navbar-link-active-color: #444 !default;

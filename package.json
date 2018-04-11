@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "d": "node $NODE_DEBUG_OPTION ./node_modules/.bin/nuxt",
+    "bd": "nuxt build",
     "debug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/webpack --hot",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --inline --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
@@ -19,6 +20,7 @@
     "koa": "^2.5.0",
     "koa-router": "^7.4.0",
     "koa-static-cache": "^5.1.2",
+    "normalize.css": "^8.0.0",
     "nuxt": "^1.4.0",
     "vue": "^2.5.16",
     "vue-server-renderer": "^2.5.16"
